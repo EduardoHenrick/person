@@ -1,8 +1,5 @@
-package br.com.person.person;
-
-
+package br.com.person.person.entity;
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
 @Entity
