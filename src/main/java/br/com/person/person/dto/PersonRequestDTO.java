@@ -1,6 +1,10 @@
 package br.com.person.person.dto;
 
-public record PersonRequestDTO(String name, Integer age) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record PersonRequestDTO(@NotBlank(message = "O nome não pode ser vazio") String name,
+                               @NotNull(message = "A idade deve ser informada") Integer age) {
 
 
 }
