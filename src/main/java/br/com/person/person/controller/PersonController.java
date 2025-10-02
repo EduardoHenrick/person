@@ -5,6 +5,7 @@ import br.com.person.person.dto.PersonResponseDTO;
 import br.com.person.person.entity.Person;
 import br.com.person.person.service.PersonService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class PersonController {
     }
 
     @PostMapping
-    public PersonResponseDTO create(@RequestBody @Valid PersonRequestDTO person) {
+    public PersonResponseDTO create(@RequestBody @Valid @NotNull(message = "o corpo da requisição não pode ser nulo") PersonRequestDTO person) {
         return service.save(person);
     }
 
