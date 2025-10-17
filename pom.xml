@@ -72,7 +72,21 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	</dependencies>
+
+        <!-- Banco H2 (escopo test) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 	<build>
 		<plugins>
