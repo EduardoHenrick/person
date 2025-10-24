@@ -10,17 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Optional;
-
-import org.springframework.http.HttpStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PersonControllerTest {
 
@@ -45,6 +44,10 @@ public class PersonControllerTest {
     }
 
     @Test
+    @Sql(statements = {
+            "DELETE FROM PERSON",
+            "ALTER TABLE PERSON ALTER COLUMN id RESTART WITH 1"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void mustCreatePerson() {
         PersonRequestDTO personRequestDTO = new PersonRequestDTO("Eduardo", 16);
         ResponseEntity<PersonResponseDTO> response = restTemplate.postForEntity(baseURL, personRequestDTO, PersonResponseDTO.class);
@@ -66,6 +69,10 @@ public class PersonControllerTest {
     @Test
     @Sql(statements = "INSERT INTO PERSON (name, age) VALUES ('Eduardo', 16);", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(statements = "DELETE FROM PERSON WHERE name='Eduardo'", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(statements = {
+            "DELETE FROM PERSON",
+            "ALTER TABLE PERSON ALTER COLUMN id RESTART WITH 1"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void mustGetAllPerson() {
         ResponseEntity<PersonResponseDTO[]> response = restTemplate.getForEntity(baseURL, PersonResponseDTO[].class);
         PersonResponseDTO[] personResponseDTOS = response.getBody();
@@ -80,7 +87,11 @@ public class PersonControllerTest {
 
     @Test
     @Sql(statements = "INSERT INTO PERSON (name, age) VALUES ('Eduardo', 16);", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(statements = "DELETE FROM PERSON WHERE id=1", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM PERSON", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(statements = {
+            "DELETE FROM PERSON",
+            "ALTER TABLE PERSON ALTER COLUMN id RESTART WITH 1"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void mustGetPersonById() {
         ResponseEntity<PersonResponseDTO> response = restTemplate.getForEntity(baseURL + "/{id}", PersonResponseDTO.class, 1L);
         PersonResponseDTO personResponseDTO = response.getBody();
@@ -93,10 +104,14 @@ public class PersonControllerTest {
 
     @Test
     @Sql(statements = "INSERT INTO PERSON (name, age) VALUES ('Eduardo', 16);", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(statements = "DELETE FROM PERSON WHERE id=1", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM PERSON", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(statements = {
+            "DELETE FROM PERSON",
+            "ALTER TABLE PERSON ALTER COLUMN id RESTART WITH 1"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void mustUpdatePerson() {
         PersonRequestDTO personRequestDTO = new PersonRequestDTO("Eduardo Henrick", 17);
-        restTemplate.put(baseURL + "/update/{id}", personRequestDTO, 1L);
+        restTemplate.put(baseURL + "/{id}", personRequestDTO, 1L);
 
         Optional<Person> optionalPerson = h2Repository.findById(1L);
 
@@ -107,6 +122,10 @@ public class PersonControllerTest {
 
     @Test
     @Sql(statements = "INSERT INTO PERSON (name, age) VALUES ('Eduardo', 16);", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(statements = {
+            "DELETE FROM PERSON",
+            "ALTER TABLE PERSON ALTER COLUMN id RESTART WITH 1"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void mustDeletePerson() {
         int recordCount = h2Repository.findAll().size();
         assertEquals(1, recordCount);

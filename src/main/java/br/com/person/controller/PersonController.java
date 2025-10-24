@@ -23,9 +23,10 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<PersonResponseDTO> create(@RequestBody @Valid @NotNull(message = "o corpo da requisição não pode ser nulo") PersonRequestDTO person) {
+        PersonResponseDTO save = service.save(person);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.save(person));
+                .body(save);
     }
 
     @GetMapping
